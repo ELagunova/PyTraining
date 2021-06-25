@@ -29,6 +29,17 @@ class TestAddContact(unittest.TestCase):
         self.open_home_page(wd)
         self.logout(wd)
 
+    def test_add_contact_without_email(self):
+        wd = self.wd
+        self.open_login_page(wd)
+        self.login(wd, username="admin", password="secret")
+        self.add_new_contact(wd, Contact(first_name="Richard", last_name="Baket",
+                             address="123 Second Ave, Houston, TX 77008", mobile="+7127431239",
+                             email="", bday="17", bmonth="June", byear="1996",
+                             notes="Richard, Houston"))
+        self.open_home_page(wd)
+        self.logout(wd)
+
     def logout(self, wd):
         wd.find_element_by_link_text("Logout").click()
 
@@ -57,7 +68,6 @@ class TestAddContact(unittest.TestCase):
     def login(self, wd, username, password):
         wd.find_element_by_name("user").clear()
         wd.find_element_by_name("user").send_keys(username)
-        wd.find_element_by_name("pass").click()
         wd.find_element_by_name("pass").clear()
         wd.find_element_by_name("pass").send_keys(password)
         wd.find_element_by_xpath("//input[@value='Login']").click()
