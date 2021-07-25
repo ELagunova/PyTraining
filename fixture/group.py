@@ -38,11 +38,11 @@ class GroupHelper:
         self.return_to_group_page()
         self.group_cache = None
 
-    def edit_first(self, group):
+    def edit_random_by_index(self, index, group):
         wd = self.app.wd
         self.open_group_page()
         # select first group
-        wd.find_element_by_name("selected[]").click()
+        self.select_group_by_index(index)
         # edit group name
         wd.find_element_by_name("edit").click()
         self.fill_group_form(group)
@@ -50,11 +50,15 @@ class GroupHelper:
         self.return_to_group_page()
         self.group_cache = None
 
-    def delete_first_group(self):
+    def select_group_by_index(self, index):
+        wd = self.app.wd
+        wd.find_elements_by_name("selected[]")[index].click()
+
+    def delete_group_by_index(self, index):
         wd = self.app.wd
         self.open_group_page()
         # select first group
-        wd.find_element_by_name("selected[]").click()
+        self.select_group_by_index(index)
         # submit deletion
         wd.find_element_by_name("delete").click()
         self.return_to_group_page()
