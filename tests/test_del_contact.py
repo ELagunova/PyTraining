@@ -6,7 +6,11 @@ def test_delete_first_contact(app):
         app.contact.create(Contact(first_name="Adam", last_name="Collins",
                                    address="781 Green Ave, Houston, TX 94007", mobile="+7165438555",
                                    email="adamcol@gmai.com", bday="19", bmonth="May", byear="1998"))
+    old_contacts = app.contact.get_contact_list()
     app.contact.delete_first()
+    contacts_list = app.contact.get_contact_list()
+    assert len(old_contacts) - 1 == len(contacts_list)
+    assert old_contacts[1:] == contacts_list
 
 
 def test_delete_all_contacts(app):
@@ -18,3 +22,4 @@ def test_delete_all_contacts(app):
                                    address="781 Green Ave, Houston, TX 94007", mobile="+7165438555",
                                    email="adamcol@gmai.com", bday="19", bmonth="May", byear="1998"))
     app.contact.delete_all()
+    assert app.contact.count() == 0
