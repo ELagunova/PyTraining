@@ -13,7 +13,8 @@ def test_delete_some_contact(app):
     app.contact.delete_by_index(index)
     assert len(old_contacts) - 1 == app.contact.count()
     contacts_list = app.contact.get_contact_list()
-    assert old_contacts[1:] == contacts_list
+    old_contacts[index:index + 1] = []
+    assert old_contacts == contacts_list
 
 
 def test_delete_all_contacts(app):
