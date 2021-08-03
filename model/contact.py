@@ -26,7 +26,7 @@ class Contact:
 
     # строковое представление объекта
     def __repr__(self):
-        return "%s%s%s" % (self.id, self.first_name, self.last_name)
+        return "%s%s%s%s" % (self.id, self.first_name, self.last_name, self.bmonth)
 
     # функция сравнения объектов
     def __eq__(self, other):
