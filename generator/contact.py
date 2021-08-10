@@ -27,7 +27,7 @@ MonthDict = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "
 
 
 def random_string(prefix='', maxlen=1, postfix=''):
-    symbols = string.ascii_letters + string.digits + string.punctuation + " "*10
+    symbols = string.ascii_letters + string.digits
     return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))]) + postfix
 
 
