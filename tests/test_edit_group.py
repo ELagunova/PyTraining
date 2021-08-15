@@ -1,20 +1,20 @@
-from random import randrange
-
+import random
 from model.group import Group
 
 
-def test_edit_group_name(app):
-    if app.group.count() == 0:
+def test_edit_group_name(app, db, check_ui):
+    if len(db.get_group_list()) == 0:
         app.group.create(Group(name="test"))
-    old_groups = app.group.get_group_list()
-    index = randrange(len(old_groups))
+    old_groups = db.get_group_list()
+    edit_group = random.choice(old_groups)
+    index = old_groups.index(edit_group)
     group = Group(name="Edit group name")
-    group.id = old_groups[index].id
-    app.group.edit_random_by_index(index, group)
-    assert len(old_groups) == app.group.count()
-    new_groups = app.group.get_group_list()
+    app.group.edit_random_by_id(edit_group.id, group)
+    new_groups = db.get_group_list()
     old_groups[index] = group
-    assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
+    assert old_groups == new_groups
+    if check_ui:
+        assert sorted(new_groups, key=Group.id_or_max) == sorted(app.group.get_group_list(), key=Group.id_or_max)
 
 '''
 TODO: параметризация теста модификации групп

@@ -10,7 +10,7 @@ class Contact:
         self.first_name = first_name
         self.last_name = last_name
         self.address = address
-        self.all_phones_from_home_page=all_phones_from_home_page
+        self.all_phones_from_home_page = all_phones_from_home_page
         self.homephone = homephone
         self.workphone = workphone
         self.mobile = mobile
