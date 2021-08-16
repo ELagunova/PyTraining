@@ -173,3 +173,23 @@ class ContactHelper:
         return Contact(homephone=homephone, mobile=mobile,
                        workphone=workphone, secondaryphone=secondaryphone)
 
+    def add_to_group(self, contact, group):
+        wd = self.app.wd
+        self.open_home_page()
+        self.select_by_id(contact.id)
+        wd.find_element_by_xpath("//select[@name='to_group']/option[@value='%s']" %group.id).click()
+        wd.find_element_by_xpath("//input[@value='Add to']").click()
+        wd.find_element_by_xpath("//a[@href='./?group=%s']" %group.id).click()
+
+    def open_group_page_with_contacts(self, group_id):
+        wd = self.app.wd
+        wd.get("http://localhost/addressbook/?group=%s" % group_id)
+
+    def delete_contact_from_group(self, group_id, contact_id):
+        wd = self.app.wd
+        self.open_group_page_with_contacts(group_id)
+        self.select_by_id(contact_id)
+        wd.find_element_by_name("remove").click()
+        self.open_home_page()
+
+
