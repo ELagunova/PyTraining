@@ -8,21 +8,20 @@ def check_group_contact_list(app, orm):
         app.contact.create(Contact(first_name="Adam", last_name="Collins",
                                    address="781 Green Ave, Houston, TX 94007", mobile="+7165438555",
                                    email="adamcol@gmai.com", bday="19", bmonth="May", byear="1998"))
-    if len(orm.get_group_list()) == 0:
+    if len(orm.get_group_list()) == 0 or len(orm.get_not_full_group(len(orm.get_contact_list()))) == 0:
         app.group.create(Group(name="test", header="test", footer="test"))
 
 
 def add_contact_to_group(app, orm):
-    contacts_list = orm.get_contact_list()
-    groups_list = orm.get_group_list()
-    contact = random.choice(contacts_list)
+    check_group_contact_list(app, orm)
+    groups_list = orm.get_not_full_group(len(orm.get_contact_list()))
     group = random.choice(groups_list)
+    contact = random.choice(orm.get_contacts_not_in_group(group))
     app.contact.add_to_group(contact, group)
     return contact, group
 
 
 def test_add_contact_to_group(app, orm):
-    check_group_contact_list(app, orm)
     contact, group = add_contact_to_group(app, orm)
     assert contact in orm.get_contacts_in_group(group)
 
