@@ -1,23 +1,30 @@
 import random
+
+import allure
+
 from model.contact import Contact
 
 
 def test_edit_name(app, db, check_ui):
-    if len(db.get_contact_list()) == 0:
-        app.contact.create(Contact(first_name="Adam", last_name="Collins",
-                                   address="781 Green Ave, Houston, TX 94007", mobile="+7165438555",
-                                   email="adamcol@gmai.com", bday="19", bmonth="May", byear="1998"))
-    old_contacts = db.get_contact_list()
-    edit_contact = random.choice(old_contacts)
     contact = Contact(first_name="Edited name", last_name="Edited lastname")
-    index = old_contacts.index(edit_contact)
-    app.contact.edit_by_id(edit_contact.id, contact)
-    new_contacts = db.get_contact_list()
-    old_contacts[index] = contact
-    assert old_contacts == new_contacts
-    if check_ui:
-        assert sorted(old_contacts, key=Contact.id_or_max) == sorted(app.contact.get_contact_list(),
-                                                                     key=Contact.id_or_max)
+    with allure.step('Check precondition'):
+        if len(db.get_contact_list()) == 0:
+            app.contact.create(Contact(first_name="Adam", last_name="Collins",
+                                       address="781 Green Ave, Houston, TX 94007", mobile="+7165438555",
+                                       email="adamcol@gmai.com", bday="19", bmonth="May", byear="1998"))
+    with allure.step('Choose contact for editing'):
+        old_contacts = db.get_contact_list()
+        edit_contact = random.choice(old_contacts)
+    with allure.step('Edit contact %s like %s' %(edit_contact, contact)):
+        index = old_contacts.index(edit_contact)
+        app.contact.edit_by_id(edit_contact.id, contact)
+    with allure.step('Check editing'):
+        new_contacts = db.get_contact_list()
+        old_contacts[index] = contact
+        assert old_contacts == new_contacts
+        if check_ui:
+            assert sorted(old_contacts, key=Contact.id_or_max) == sorted(app.contact.get_contact_list(),
+                                                                         key=Contact.id_or_max)
 
 '''
 TODO: параметризация теста модификации контактов

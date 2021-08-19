@@ -1,4 +1,7 @@
 import random
+
+import allure
+
 from model.contact import Contact
 from model.group import Group
 
@@ -22,17 +25,22 @@ def add_contact_to_group(app, orm):
 
 
 def test_add_contact_to_group(app, orm):
-    contact, group = add_contact_to_group(app, orm)
-    assert contact in orm.get_contacts_in_group(group)
+    with allure.step('Add contact to group'):
+        contact, group = add_contact_to_group(app, orm)
+    with allure.step('Check that contact added to group'):
+        assert contact in orm.get_contacts_in_group(group)
 
 
 def test_del_contact_from_group(app, orm):
-    groups_with_contacts = orm.get_groups_with_contacts()
-    if len(groups_with_contacts) == 0:
-        check_group_contact_list(app, orm)
-        contact, group = add_contact_to_group(app, orm)
-    else:
-        group = random.choice(groups_with_contacts)
-        contact = random.choice(orm.get_contacts_in_group(group))
-    app.contact.delete_contact_from_group(group.id, contact.id)
-    assert contact in orm.get_contacts_not_in_group(group)
+    with allure.step('Given groups list that contains contacts'):
+        groups_with_contacts = orm.get_groups_with_contacts()
+        if len(groups_with_contacts) == 0:
+            check_group_contact_list(app, orm)
+            contact, group = add_contact_to_group(app, orm)
+        else:
+            group = random.choice(groups_with_contacts)
+            contact = random.choice(orm.get_contacts_in_group(group))
+    with allure.step('Delete %s from group %s' %(contact, group)):
+        app.contact.delete_contact_from_group(group.id, contact.id)
+    with allure.step('Check deleting operation'):
+        assert contact in orm.get_contacts_not_in_group(group)

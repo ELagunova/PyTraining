@@ -1,20 +1,27 @@
 import random
+
+import allure
+
 from model.group import Group
 
 
 def test_edit_group_name(app, db, check_ui):
-    if len(db.get_group_list()) == 0:
-        app.group.create(Group(name="test"))
-    old_groups = db.get_group_list()
-    edit_group = random.choice(old_groups)
-    index = old_groups.index(edit_group)
     group = Group(name="Edit group name")
-    app.group.edit_random_by_id(edit_group.id, group)
-    new_groups = db.get_group_list()
-    old_groups[index] = group
-    assert old_groups == new_groups
-    if check_ui:
-        assert sorted(new_groups, key=Group.id_or_max) == sorted(app.group.get_group_list(), key=Group.id_or_max)
+    with allure.step('Check precondition'):
+        if len(db.get_group_list()) == 0:
+            app.group.create(Group(name="test"))
+    with allure.step('Choose group for editing'):
+        old_groups = db.get_group_list()
+        edit_group = random.choice(old_groups)
+        index = old_groups.index(edit_group)
+    with allure.step('Edit group %s like %s' %(edit_group, group)):
+        app.group.edit_random_by_id(edit_group.id, group)
+    with allure.step('Check editing'):
+        new_groups = db.get_group_list()
+        old_groups[index] = group
+        assert old_groups == new_groups
+        if check_ui:
+            assert sorted(new_groups, key=Group.id_or_max) == sorted(app.group.get_group_list(), key=Group.id_or_max)
 
 '''
 TODO: параметризация теста модификации групп
